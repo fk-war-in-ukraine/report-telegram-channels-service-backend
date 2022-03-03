@@ -51,9 +51,9 @@ async def api_report():
     phone_number = request.json.get('phoneNumber')
     api_id = request.json.get('apiId')
     api_hash = request.json.get('apiHash')
-    channels = request.json.get('channels')
+    channel = request.json.get('channel')
 
     telegram_client = Client(phone_number=phone_number, api_id=int(api_id), api_hash=api_hash)
-    report_results = await telegram_client.report_channels(channels)
+    report_result = await telegram_client.report_channel(channel)
 
-    return jsonify({'reportResults': report_results})
+    return jsonify({'reportResult': report_result})

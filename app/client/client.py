@@ -1,5 +1,5 @@
 from telethon import TelegramClient, functions, types
-from typing import List
+from typing import Dict
 import time
 
 
@@ -34,29 +34,27 @@ class Client:
 
         return is_authorized
 
-    async def report_channels(self, channels: List[str]) -> List[dict]:
-        result = []
-
+    async def report_channel(self, channel: str) -> Dict:
         await self._try_connect()
 
-        for channel in channels:
-            channel = channel.strip()
-            try:
-                report_result = await self._client(functions.account.ReportPeerRequest(
-                    peer=await self._client.get_entity(channel),
-                    reason=types.InputReportReasonOther(),
-                    message='Разжигание войны'
-                ))
-                result.append({
-                    'channel': channel,
-                    'status': report_result
-                })
-                time.sleep(0.3)
-            except Exception as e:
-                result.append({
-                    'channel': channel,
-                    'status': False
-                })
+        channel = channel.strip()
+        try:
+            report_result = await self._client(functions.account.ReportPeerRequest(
+                peer=await self._client.get_entity(channel),
+                reason=types.InputReportReasonOther(),
+                message='Разжигание войны'
+            ))
+            result = {
+                'channel': channel,
+                'status': report_result
+            }
+            time.sleep(0.3)
+        except Exception as e:
+            result = {
+                'channel': channel,
+                'status': False,
+                'error': str(e)
+            }
 
         await self._try_disconnect()
         return result
